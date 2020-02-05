@@ -1,3 +1,5 @@
+# -*- mode: shellscript -*-
+
 #
 # Executes commands at the start of an interactive session.
 #
@@ -11,3 +13,125 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+if [ -f "$HOME/.config/zsh/private.zshrc.zsh" ]; then
+  source "$HOME/.config/zsh/private.zshrc.zsh"
+fi
+
+#
+# zsh
+#
+
+setopt CLOBBER
+setopt HIST_FCNTL_LOCK
+setopt INC_APPEND_HISTORY
+unsetopt AUTO_CD
+unsetopt CDABLE_VARS
+unsetopt CORRECT
+unsetopt EXTENDED_GLOB
+
+#
+# Aliases
+#
+
+if [ $(uname) = 'Linux' ]; then
+  alias ls='ls -F --color=auto'
+else
+  alias ls='ls -FG'
+fi
+
+#
+# Environment variables
+#
+
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export WORDCHARS=''
+export EDITOR=vi
+export VISUAL=vi
+# Remove following arguments from default `LESS`
+# - -F (--quit-if-one-screen)
+# - -g (--hilite-search)
+# - -S (--chop-long-lines)
+# - -w (--hilite-unread)
+export LESS='-i -M -R -X -z-4'
+
+# HISTORY_IGNORE='(cat *|cd|cd *|make *|mv *|less *|ls|ls *|ps|ps *|pwd|rm *|tmux|make)'
+
+export PATH="$HOME/opt/bin:$PATH:/usr/sbin:/sbin"
+# /opt/go
+export GOPATH="$HOME/opt/go"
+export PATH="$HOME/opt/go/bin:$PATH"
+# /opt/node
+export PATH="$HOME/opt/node/bin:$PATH"
+# /opt/ruby
+export GEM_HOME="$HOME/opt/ruby/gems"
+export PATH="$HOME/opt/ruby/gems/bin:$PATH"
+# /opt/php
+export COMPOSER_HOME="$HOME/opt/php/composer"
+export PATH="$HOME/opt/php/bin:$PATH"
+export PATH="$HOME/opt/php/composer/vendor/bin:$PATH"
+# /opt/python
+export PYTHONUSERBASE="$HOME/opt/python"
+export PATH="$HOME/opt/python/bin:$PATH"
+
+# node@12
+export PATH="/usr/local/opt/node@12/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/node@12/lib"
+export CPPFLAGS="-I/usr/local/opt/node@12/include"
+
+#
+# Hook
+#
+
+function my-widget-set-window-title() {
+  set-window-title %M %~
+}
+add-zsh-hook chpwd my-widget-set-window-title
+add-zsh-hook preexec my-widget-set-window-title
+
+#
+# Key bindings
+#
+
+bindkey '^U' backward-kill-line
+
+function my-widget-cdup() {
+  cd ..
+  prompt_${prompt_theme}_precmd
+  zle reset-prompt
+  return 0
+}
+zle -N my-widget-cdup
+bindkey '^q' my-widget-cdup
+
+function my-widget-popd() {
+  popd
+  prompt_${prompt_theme}_precmd
+  zle reset-prompt
+  return 0
+}
+zle -N my-widget-popd
+bindkey '^o' my-widget-popd
+
+function my-widget-peco-select-history() {
+  typeset tac
+  if which tac >/dev/null; then
+    tac=tac
+  else
+    tac='tail -r'
+  fi
+  BUFFER=$(fc -l -n 1 | eval $tac | peco --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle -R -c
+}
+zle -N my-widget-peco-select-history
+bindkey '^r' my-widget-peco-select-history
+
+#
+# External tools
+#
+
+if is-callable 'direnv'; then
+  eval "$(direnv hook zsh)"
+fi
