@@ -33,8 +33,6 @@ function prompt_tekezo_setup() {
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{3}♺%f'
   zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{2}❮%F{3}❮%F{1}❮%f%b'
 
-  local version=$(cd "${ZDOTDIR:-$HOME}"/.zprezto/ && git rev-list HEAD --count)
-
   local remote_indicator='🏠 local %B'
   local remote_indicator_color='%F{white}'
   [ -z "$ZSH_PROMPT_SSH_COLOR" ] && ZSH_PROMPT_SSH_COLOR="%F{white}%K{green}"
@@ -46,7 +44,7 @@ function prompt_tekezo_setup() {
 
   # Define prompts.
   PROMPT="
-%F{cyan}🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁 theme.r${version}%f
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
 ⏰ %F{white}%D{%F %T %Z}%f
 ${remote_indicator_color}${remote_indicator}${ZSH_PROMPT_HOSTNAME}%b%f%k %F{magenta}@%n%f
 📁 %F{green}%d%f
