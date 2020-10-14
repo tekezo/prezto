@@ -90,6 +90,8 @@ function my-widget-set-window-title() {
 add-zsh-hook chpwd my-widget-set-window-title
 add-zsh-hook preexec my-widget-set-window-title
 
+my-widget-set-window-title
+
 #
 # Key bindings
 #
