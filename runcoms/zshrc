@@ -75,11 +75,6 @@ export PATH="$HOME/opt/php/composer/vendor/bin:$PATH"
 export PYTHONUSERBASE="$HOME/opt/python"
 export PATH="$HOME/opt/python/bin:$PATH"
 
-# node@12
-export PATH="/usr/local/opt/node@12/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/node@12/lib"
-export CPPFLAGS="-I/usr/local/opt/node@12/include"
-
 #
 # Hook
 #
