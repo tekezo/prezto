@@ -80,7 +80,8 @@ export PATH="$HOME/opt/python/bin:$PATH"
 #
 
 function my-widget-set-window-title() {
-  set-window-title ${ZSH_PROMPT_HOSTNAME} %~
+  # Truncate %d to 25 character
+  set-window-title ${ZSH_PROMPT_HOSTNAME} "%25<...<%d"
 }
 add-zsh-hook chpwd my-widget-set-window-title
 add-zsh-hook precmd my-widget-set-window-title
