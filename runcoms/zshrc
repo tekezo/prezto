@@ -74,22 +74,23 @@ export LESS='-i -M -R -X -z-4'
 
 # HISTORY_IGNORE='(cat *|cd|cd *|make *|mv *|less *|ls|ls *|ps|ps *|pwd|rm *|tmux|make)'
 
-export PATH="$HOME/opt/bin:$PATH:/usr/sbin:/sbin"
+path-prepend "$HOME/opt/bin"
+path-append '/usr/sbin' '/sbin'
 # /opt/go
 export GOPATH="$HOME/opt/go"
-export PATH="$HOME/opt/go/bin:$PATH"
+path-prepend "$HOME/opt/go/bin"
 # /opt/node
-export PATH="$HOME/opt/node/bin:$PATH"
+path-prepend "$HOME/opt/node/bin"
 # /opt/ruby
 export GEM_HOME="$HOME/opt/ruby/gems"
-export PATH="$HOME/opt/ruby/gems/bin:$PATH"
+path-prepend "$HOME/opt/ruby/gems/bin"
 # /opt/php
 export COMPOSER_HOME="$HOME/opt/php/composer"
-export PATH="$HOME/opt/php/bin:$PATH"
-export PATH="$HOME/opt/php/composer/vendor/bin:$PATH"
+path-prepend "$HOME/opt/php/bin"
+path-prepend "$HOME/opt/php/composer/vendor/bin"
 # /opt/python
 export PYTHONUSERBASE="$HOME/opt/python"
-export PATH="$HOME/opt/python/bin:$PATH"
+path-prepend "$HOME/opt/python/bin"
 
 #
 # Hook
