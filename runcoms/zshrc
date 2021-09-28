@@ -14,6 +14,22 @@ fi
 
 # Customize to your needs...
 
+function path-append() {
+  for ARG in "$@"; do
+    if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
+      PATH="${PATH:+"$PATH:"}$ARG"
+    fi
+  done
+}
+
+function path-prepend() {
+  for ARG in "$@"; do
+    if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
+      PATH="$ARG${PATH:+":$PATH"}"
+    fi
+  done
+}
+
 if [ -f "$HOME/.config/zsh/private.zshrc.zsh" ]; then
   source "$HOME/.config/zsh/private.zshrc.zsh"
 fi
