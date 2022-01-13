@@ -30,10 +30,6 @@ function path-prepend() {
   done
 }
 
-if [ -f "$HOME/.config/zsh/private.zshrc.zsh" ]; then
-  source "$HOME/.config/zsh/private.zshrc.zsh"
-fi
-
 #
 # zsh
 #
@@ -147,4 +143,12 @@ bindkey '^r' my-widget-peco-select-history
 
 if is-callable 'direnv'; then
   eval "$(direnv hook zsh)"
+fi
+
+#
+# private.zshrc.zsh
+#
+
+if [ -f "$HOME/.config/zsh/private.zshrc.zsh" ]; then
+  source "$HOME/.config/zsh/private.zshrc.zsh"
 fi
