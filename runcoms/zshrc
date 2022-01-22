@@ -138,6 +138,18 @@ zle -N my-widget-peco-select-history
 bindkey '^r' my-widget-peco-select-history
 
 #
+# Extra functions
+#
+
+function tmux-auto() {
+  if tmux list-sessions | grep -q '^0:'; then
+    tmux attach
+  else
+    tmux
+  fi
+}
+
+#
 # External tools
 #
 
