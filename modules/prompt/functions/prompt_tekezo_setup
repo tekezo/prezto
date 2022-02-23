@@ -42,9 +42,16 @@ function prompt_tekezo_setup() {
   fi
   [ -z "$ZSH_PROMPT_HOSTNAME" ] && ZSH_PROMPT_HOSTNAME="%M"
 
-  local tmux_alert='🔥🔥🔥🔥 tmux is not running 🔥🔥🔥🔥'
+  local tmux_alert="🔥🔥🔥🔥 tmux is not running 🔥🔥🔥🔥
+"
   if [ -n "$LC_TMUX_RUNNING" ]; then
     tmux_alert=''
+  fi
+
+  local ssh_agent_alert="🔥🔥🔥🔥 ssh-agent empty entries 🔥🔥🔥🔥
+"
+  if [ $(ssh-add -l 2>&1 | grep -c SHA256) != '0' ]; then
+    ssh_agent_alert=''
   fi
 
   # Define prompts.
@@ -54,7 +61,7 @@ function prompt_tekezo_setup() {
 ${remote_indicator_color}${remote_indicator}${ZSH_PROMPT_HOSTNAME}%b%f%k %F{magenta}@%n%f
 📁 %F{green}%d%f
 🔀 %F{cyan}"'$(prompt_tekezo_git_branch_name)'"%f
-${tmux_alert}"'${editor_info[keymap]} '
+${tmux_alert}${ssh_agent_alert}"'${editor_info[keymap]} '
   RPROMPT=''
 }
 
