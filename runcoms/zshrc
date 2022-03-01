@@ -99,6 +99,14 @@ function my-widget-set-window-title() {
 add-zsh-hook chpwd my-widget-set-window-title
 add-zsh-hook precmd my-widget-set-window-title
 
+function my-widget-set-tmux-running() {
+  if [ -n "$TMUX" ]; then
+    # Use LC_* environment variable in order to be handled by ssh via SendEnv/AcceptEnv.
+    export LC_TMUX_RUNNING=1
+  fi
+}
+add-zsh-hook precmd my-widget-set-tmux-running
+
 #
 # Key bindings
 #
@@ -142,9 +150,6 @@ bindkey '^r' my-widget-peco-select-history
 #
 
 function tmux-auto() {
-  # Use LC_* environment variable in order to be handled by ssh via SendEnv/AcceptEnv.
-  export LC_TMUX_RUNNING=1
-
   if tmux list-sessions | grep -q '^0:'; then
     tmux attach
   else
