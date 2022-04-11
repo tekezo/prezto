@@ -5,6 +5,10 @@ function prompt_tekezo_git_branch_name() {
 }
 
 function prompt_tekezo_tmux_alert() {
+  if [ -n "$ZSH_PROMPT_SUPPRESS_ALERT" ]; then
+    return
+  fi
+
   if [ -z "$TMUX" -a -z "$LC_TMUX_RUNNING" ]; then
     echo "🔥🔥🔥🔥 tmux is not running 🔥🔥🔥🔥"
   fi
@@ -55,7 +59,6 @@ function prompt_tekezo_setup() {
   fi
 
   if [ -n "$ZSH_PROMPT_SUPPRESS_ALERT" ]; then
-    prompt_tekezo_tmux_alert=''
     ssh_agent_alert=''
   fi
 
