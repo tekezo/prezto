@@ -54,6 +54,11 @@ function prompt_tekezo_setup() {
     ssh_agent_alert=''
   fi
 
+  if [ -n "$ZSH_PROMPT_SUPPRESS_ALERT" ]; then
+    prompt_tekezo_tmux_alert=''
+    ssh_agent_alert=''
+  fi
+
   # Define prompts.
   PROMPT="
 🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
