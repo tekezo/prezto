@@ -1,7 +1,14 @@
 # -*- mode: shellscript -*-
 
 function prompt_tekezo_git_branch_name() {
-  git rev-parse --abbrev-ref HEAD 2>/dev/null
+  # Skip running git if NO_GIT environment variable is specified.
+  # (This is to avoid prompting every time git command is executed on macOS without Xcode installed)
+
+  if [[ -z "$NO_GIT" ]]; then
+    git rev-parse --abbrev-ref HEAD 2>/dev/null
+  else
+    echo "no git"
+  fi
 }
 
 function prompt_tekezo_tmux_alert() {
