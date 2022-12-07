@@ -12,4 +12,7 @@ fi
 
 if [ -f "$HOME/.config/zsh/private.zshenv.zsh" ]; then
   source "$HOME/.config/zsh/private.zshenv.zsh"
+else
+  mkdir -p "$HOME/.config/zsh"
+  touch "$HOME/.config/zsh/private.zshenv.zsh"
 fi
