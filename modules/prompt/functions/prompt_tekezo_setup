@@ -10,7 +10,7 @@ function prompt_tekezo_git() {
     if [[ ! -z "$branch" ]]; then
       local revision=$(git log --pretty=format:'%h' -n 1)
       local message=$(git log --pretty=format:'%s' -n 1 | cut -b 1-55)
-      echo "%B${branch}%b | ${revision} | %K{cyan}%k%F{black}${message}%k"
+      echo "%B${branch}%b | ${revision} | %K{cyan}%F{black}${message}%k"
     fi
   else
     echo "no git"
