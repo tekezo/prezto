@@ -5,10 +5,12 @@ function prompt_tekezo_git() {
   # (This is to avoid prompting every time git command is executed on macOS without Xcode installed)
 
   if [[ -z "$NO_GIT" ]]; then
-    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
     if [[ ! -z "$branch" ]]; then
-      echo "${branch} | $(git log --pretty=format:'%h | %s' -n 1 | cut -b 1-60)"
+      local revision=$(git log --pretty=format:'%h' -n 1)
+      local message=$(git log --pretty=format:'%s' -n 1 | cut -b 1-55)
+      echo "%B${branch}%b | ${revision} | %K{cyan}%k%F{black}${message}%k"
     fi
   else
     echo "no git"
