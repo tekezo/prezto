@@ -37,10 +37,12 @@ function path-prepend() {
 setopt CLOBBER
 setopt HIST_FCNTL_LOCK
 setopt INC_APPEND_HISTORY
+setopt HIST_REDUCE_BLANKS
 unsetopt AUTO_CD
 unsetopt CDABLE_VARS
 unsetopt CORRECT
 unsetopt EXTENDED_GLOB
+unsetopt EXTENDED_HISTORY
 
 #
 # Aliases
