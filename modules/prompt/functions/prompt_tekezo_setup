@@ -1,0 +1,90 @@
+# -*- mode: shellscript -*-
+
+function prompt_tekezo_git() {
+  # Skip running git if NO_GIT environment variable is specified.
+  # (This is to avoid prompting every time git command is executed on macOS without Xcode installed)
+
+  if [[ -z "$NO_GIT" ]]; then
+    local branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    if [[ ! -z "$branch" ]]; then
+      local revision=$(git log --pretty=format:'%h' -n 1)
+      local message=$(git log --pretty=format:'%s' -n 1 | cut -b 1-55)
+      local full=$(echo "%B${branch}%b | ${revision} | %K{black}%F{cyan}${message}" | cut -b 1-95)
+      echo "$full%k"
+    fi
+  else
+    echo "no git"
+  fi
+}
+
+function prompt_tekezo_tmux_alert() {
+  if [ -n "$ZSH_PROMPT_SUPPRESS_ALERT" ]; then
+    return
+  fi
+
+  if [ -z "$TMUX" -a -z "$LC_TMUX_RUNNING" ]; then
+    echo "🔥🔥🔥🔥 tmux is not running 🔥🔥🔥🔥"
+  fi
+}
+
+function prompt_tekezo_setup() {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent sp subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Tell prezto we can manage this prompt
+  zstyle ':prezto:module:prompt' managed 'yes'
+
+  # Formats:
+  #   %b - branchname
+  #   %u - unstagedstr (see below)
+  #   %c - stagedstr (see below)
+  #   %a - action (e.g. rebase-i)
+  #   %R - repository path
+  #   %S - path in the repository
+  local branch_format="(%F{cyan}%b%f%u%c)"
+  local action_format="(%F{green}%a%f)"
+  local unstaged_format="%F{yellow}●%f"
+  local staged_format="%F{green}●%f"
+
+  # Set editor-info parameters.
+  zstyle ':prezto:module:editor:info:completing' format '%B%F{7}...%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format ' %B%F{1}❯%F{3}❯%F{2}❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ' %F{3}♺%f'
+  zstyle ':prezto:module:editor:info:keymap:alternate' format ' %B%F{2}❮%F{3}❮%F{1}❮%f%b'
+
+  local remote_indicator='🏠 local %B'
+  local remote_indicator_color='%F{white}'
+  [ -z "$ZSH_PROMPT_SSH_COLOR" ] && ZSH_PROMPT_SSH_COLOR="%F{white}%K{green}"
+  if [ -n "$SSH_TTY" ]; then
+    remote_indicator='⛺️ ssh %B'
+    remote_indicator_color=$ZSH_PROMPT_SSH_COLOR
+  fi
+  [ -z "$ZSH_PROMPT_HOSTNAME" ] && ZSH_PROMPT_HOSTNAME="%M"
+
+  # Define prompts.
+  PROMPT="
+🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁
+⏰ %F{white}%D{%F %T %Z}%f
+${remote_indicator_color}${remote_indicator}${ZSH_PROMPT_HOSTNAME}%b%f%k %F{magenta}@%n%f
+📁 %F{green}%d%f
+🔀 %F{cyan}"'$(prompt_tekezo_git)'"%f
+$(prompt_tekezo_tmux_alert)
+"'${editor_info[keymap]} '
+  RPROMPT=''
+}
+
+function prompt_tekezo_preview() {
+  local +h PROMPT=''
+  local +h RPROMPT=''
+  local +h SPROMPT=''
+
+  editor-info 2>/dev/null
+  prompt_preview_theme 'tekezo'
+}
+
+prompt_tekezo_setup "$@"

@@ -9,3 +9,10 @@
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
+
+if [ -f "$HOME/.config/zsh/private.zshenv.zsh" ]; then
+  source "$HOME/.config/zsh/private.zshenv.zsh"
+else
+  mkdir -p "$HOME/.config/zsh"
+  touch "$HOME/.config/zsh/private.zshenv.zsh"
+fi

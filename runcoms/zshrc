@@ -1,3 +1,5 @@
+# -*- mode: shellscript -*-
+
 #
 # Executes commands at the start of an interactive session.
 #
@@ -11,3 +13,168 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+function path-append() {
+  for ARG in "$@"; do
+    if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
+      PATH="${PATH:+"$PATH:"}$ARG"
+    fi
+  done
+}
+
+function path-prepend() {
+  for ARG in "$@"; do
+    if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
+      PATH="$ARG${PATH:+":$PATH"}"
+    fi
+  done
+}
+
+#
+# zsh
+#
+
+setopt CLOBBER
+setopt HIST_FCNTL_LOCK
+setopt INC_APPEND_HISTORY
+setopt HIST_REDUCE_BLANKS
+unsetopt AUTO_CD
+unsetopt CDABLE_VARS
+unsetopt CORRECT
+unsetopt EXTENDED_GLOB
+unsetopt EXTENDED_HISTORY
+
+#
+# Aliases
+#
+
+if [ $(uname) = 'Linux' ]; then
+  alias ls='ls -F --color=auto'
+else
+  alias ls='ls -FG'
+fi
+
+#
+# Environment variables
+#
+
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export WORDCHARS=''
+export EDITOR=vi
+export VISUAL=vi
+# Remove following arguments from default `LESS`
+# - -F (--quit-if-one-screen)
+# - -g (--hilite-search)
+# - -S (--chop-long-lines)
+# - -w (--hilite-unread)
+export LESS='-i -M -R -X -z-4'
+export BC_ENV_ARGS=-l
+
+# HISTORY_IGNORE='(cat *|cd|cd *|make *|mv *|less *|ls|ls *|ps|ps *|pwd|rm *|tmux|make)'
+
+path-prepend "$HOME/opt/bin"
+path-append '/usr/sbin' '/sbin'
+# /opt/go
+export GOPATH="$HOME/opt/go"
+path-prepend "$HOME/opt/go/bin"
+# /opt/node
+path-prepend "$HOME/opt/node/bin"
+# /opt/ruby
+export GEM_HOME="$HOME/opt/ruby/gems"
+path-prepend "$HOME/opt/ruby/gems/bin"
+# /opt/php
+export COMPOSER_HOME="$HOME/opt/php/composer"
+path-prepend "$HOME/opt/php/bin"
+path-prepend "$HOME/opt/php/composer/vendor/bin"
+# /opt/python
+export PYTHONUSERBASE="$HOME/opt/python"
+path-prepend "$HOME/opt/python/bin"
+
+#
+# Hook
+#
+
+function my-widget-set-window-title() {
+  # Truncate %d to 25 character
+  set-window-title "%20>...>$ZSH_PROMPT_HOSTNAME" "%25<...<%d"
+}
+add-zsh-hook chpwd my-widget-set-window-title
+add-zsh-hook precmd my-widget-set-window-title
+
+function my-widget-set-tmux-running() {
+  if [ -n "$TMUX" ]; then
+    # Use LC_* environment variable in order to be handled by ssh via SendEnv/AcceptEnv.
+    export LC_TMUX_RUNNING=1
+  fi
+}
+add-zsh-hook precmd my-widget-set-tmux-running
+
+#
+# Key bindings
+#
+
+bindkey '^U' backward-kill-line
+
+function my-widget-cdup() {
+  cd ..
+  prompt_${prompt_theme}_precmd
+  zle reset-prompt
+  return 0
+}
+zle -N my-widget-cdup
+bindkey '^q' my-widget-cdup
+
+function my-widget-popd() {
+  popd
+  prompt_${prompt_theme}_precmd
+  zle reset-prompt
+  return 0
+}
+zle -N my-widget-popd
+bindkey '^o' my-widget-popd
+
+function my-widget-peco-select-history() {
+  typeset tac
+  if which tac >/dev/null; then
+    tac=tac
+  else
+    tac='tail -r'
+  fi
+  BUFFER=$(fc -l -n 1 | eval $tac | peco --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle -R -c
+}
+zle -N my-widget-peco-select-history
+bindkey '^r' my-widget-peco-select-history
+
+#
+# Extra functions
+#
+
+function tmux-auto() {
+  if tmux list-sessions | grep -q '^0:'; then
+    tmux attach
+  else
+    tmux
+  fi
+}
+
+#
+# External tools
+#
+
+if is-callable 'direnv'; then
+  eval "$(direnv hook zsh)"
+fi
+
+#
+# private.zshrc.zsh
+#
+
+if [ -f "$HOME/.config/zsh/private.zshrc.zsh" ]; then
+  source "$HOME/.config/zsh/private.zshrc.zsh"
+else
+  mkdir -p "$HOME/.config/zsh"
+  touch "$HOME/.config/zsh/private.zshrc.zsh"
+fi
