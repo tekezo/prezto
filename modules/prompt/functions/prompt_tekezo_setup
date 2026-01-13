@@ -29,7 +29,7 @@ function prompt_tekezo_tmux_alert() {
 }
 
 function prompt_tekezo_inherit_ssh_auth_sock() {
-  if [[ -n "$TMUX" && ! -S "$SSH_AUTH_SOCK" && $+commands[tmux] -eq 1 ]]; then
+  if [[ -n "$TMUX" && $+commands[tmux] -eq 1 ]]; then
     local tmux_ssh_auth_sock
     tmux_ssh_auth_sock="$(tmux show-environment -g SSH_AUTH_SOCK 2> /dev/null)"
     if [[ "$tmux_ssh_auth_sock" == SSH_AUTH_SOCK=* ]]; then
