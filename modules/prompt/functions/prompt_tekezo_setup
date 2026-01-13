@@ -50,6 +50,7 @@ function prompt_tekezo_setup() {
   autoload -Uz add-zsh-hook
 
   prompt_tekezo_inherit_ssh_auth_sock
+  add-zsh-hook preexec prompt_tekezo_inherit_ssh_auth_sock
 
   # Tell prezto we can manage this prompt
   zstyle ':prezto:module:prompt' managed 'yes'
